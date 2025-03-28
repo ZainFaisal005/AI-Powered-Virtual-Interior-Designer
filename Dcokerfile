@@ -1,0 +1,31 @@
+# Dockerfile
+
+# Step 1: Base Image
+FROM python:3.10-slim
+
+# Step 2: Set Environment Variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Step 3: Install Dependencies
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0
+
+# Step 4: Create Work Directory
+WORKDIR /app
+
+# Step 5: Create Cache Directory and Set Permissions
+RUN mkdir -p /.cache/huggingface/hub && chmod -R 777 /.cache
+
+# Step 6: Copy Project Files
+COPY . .
+
+# Step 7: Install Python Packages
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Step 8: Expose Port
+EXPOSE 7860
+
+# Step 9: Command to Run the App
+CMD ["python", "app.py"]

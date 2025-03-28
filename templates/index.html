@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>✨ AI-Powered Virtual Interior Designer ✨</title>
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 1rem;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #generated-image {
+            margin-top: 10px;
+            width: 500px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #download-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #008cba;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        #download-link:hover {
+            background-color: #007ba7;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+
+        #loading {
+            display: none;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ff5733;
+        }
+
+        #design-heading {
+            display: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ AI-Powered Virtual Interior Designer ✨</h1>
+        <form id="design-form">
+            <label>Room Type</label>
+            <input type="text" name="room_type" placeholder="e.g., Living Room" required>
+
+            <label>Style</label>
+            <input type="text" name="style" placeholder="e.g., Modern" required>
+
+            <label>Color</label>
+            <input type="text" name="color" placeholder="e.g., Blue and Black" required>
+
+            <label>Dimensions</label>
+            <input type="text" name="dimensions" placeholder="e.g., 512x512" required>
+
+            <button type="submit">Generate Design</button>
+        </form>
+
+        <div id="result-section">
+            <div id="loading">⏳ Generating your design... Please wait</div>
+            <h2 id="design-heading">🎨 Generated Design</h2>
+            <img id="generated-image" src="" alt="Design Image" style="display: none;">
+            <a id="download-link" href="#" download="generated_design.png" style="display: none;">⬇️ Download Image</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("design-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+
+            // Reset UI
+            document.getElementById("generated-image").style.display = "none";
+            document.getElementById("download-link").style.display = "none";
+            document.getElementById("design-heading").style.display = "none";
+
+            // Show loading
+            document.getElementById("loading").style.display = "block";
+
+            try {
+                const response = await fetch("/generate", {
+                    method: "POST",
+                    body: formData
+                });
+
+                document.getElementById("loading").style.display = "none"; // Hide loading
+
+                if (!response.ok) {
+                    alert("Failed to generate design. Check inputs and server logs.");
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Show results
+                document.getElementById("generated-image").src = data.image_data;
+                document.getElementById("generated-image").style.display = "block";
+                document.getElementById("design-heading").style.display = "block";
+
+                const downloadLink = document.getElementById("download-link");
+                downloadLink.href = data.image_data;
+                downloadLink.style.display = "inline-block";
+
+            } catch (error) {
+                document.getElementById("loading").style.display = "none"; // Hide loading
+                alert("An error occurred while generating the design.");
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
