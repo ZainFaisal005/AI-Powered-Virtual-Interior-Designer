@@ -125,7 +125,7 @@ Contributions are welcome! Please fork the repo, create a new branch, and make a
 ## 💬 **Support & Feedback**  
 If you encounter any issues or have suggestions, feel free to:  
 - Open an issue in the repository  
-- Reach out via email: [your-email@example.com](zainfaisal280@gmail.com)  
+- Reach out via email: [zainfaisal280@gmail.com](zainfaisal280@gmail.com)  
 
 ---
 
